@@ -7,6 +7,7 @@ defmodule ToyApp.PostsTest do
     alias ToyApp.Posts.Micropost
 
     import ToyApp.PostsFixtures
+    import ToyApp.AccountsFixtures
 
     @invalid_attrs %{content: nil, user_id: nil}
 
@@ -64,5 +65,20 @@ defmodule ToyApp.PostsTest do
       micropost = micropost_fixture()
       assert %Ecto.Changeset{} = Posts.change_micropost(micropost)
     end
+
+    test "a user can have multiple microposts" do
+      user = user_fixture()
+      micropost1_attrs = %{content: "first post", user_id: user.id}
+      micropost2_attrs = %{content: "second post", user_id: user.id}
+
+      {:ok, _micropost1} = Posts.create_micropost(micropost1_attrs)
+      {:ok, _micropost2} = Posts.create_micropost(micropost2_attrs)
+
+      user = Repo.preload(user, :microposts)
+      assert length(user.microposts) == 2
+      assert Enum.any?(user.microposts, fn mp -> mp.content == "first post" end)
+      assert Enum.any?(user.microposts, fn mp -> mp.content == "second post" end)
+    end
+
   end
 end
