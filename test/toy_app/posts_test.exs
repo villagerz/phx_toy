@@ -32,6 +32,13 @@ defmodule ToyApp.PostsTest do
       assert {:error, %Ecto.Changeset{}} = Posts.create_micropost(@invalid_attrs)
     end
 
+    test "create_micropost/1 with content length greater than 280 returns error changeset" do
+      long_content = String.duplicate("a", 281)
+      invalid_attrs = %{content: long_content, user_id: 42}
+
+      assert {:error, %Ecto.Changeset{}} = Posts.create_micropost(invalid_attrs)
+    end
+
     test "update_micropost/2 with valid data updates the micropost" do
       micropost = micropost_fixture()
       update_attrs = %{content: "some updated content", user_id: 43}
