@@ -22,6 +22,7 @@ defmodule ToyAppWeb.Router do
     get "/index", PageController, :index
     get "/home", PageController, :home
     resources "/users", UserController
+    resources "/microposts", MicropostController
   end
 
   # Other scopes may use custom stacks.
